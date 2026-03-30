@@ -1,4 +1,5 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Prevent double slashes when NEXT_PUBLIC_API_URL ends with `/`.
+const BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/+$/, "");
 const KEY = process.env.API_KEY || "";
 
 async function req<T>(path: string, opts: RequestInit = {}): Promise<T> {
