@@ -1,14 +1,15 @@
 // Prevent double slashes when NEXT_PUBLIC_API_URL ends with `/`.
 const BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/+$/, "");
-const KEY = process.env.API_KEY || "";
+// This module is used by client components, so auth must come from a NEXT_PUBLIC var.
+const KEY = process.env.NEXT_PUBLIC_API_KEY || process.env.API_KEY || "";
 
 async function req<T>(path: string, opts: RequestInit = {}): Promise<T> {
   const res = await fetch(`${BASE}${path}`, {
     ...opts,
     headers: {
       "Content-Type": "application/json",
-      "X-API-Key": KEY,
       ...opts.headers,
+      ...(KEY ? { "X-API-Key": KEY } : {}),
     },
   });
   if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
